@@ -26,7 +26,7 @@ const HomePage = () => {
           {products.map((product) => (
             <div
               key={product.id}
-              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow p-3 flex flex-col"
+              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow p-3. flex flex-col"
             >
               <img
                 src=""
