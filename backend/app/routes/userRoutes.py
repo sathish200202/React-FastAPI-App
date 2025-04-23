@@ -8,7 +8,7 @@ from utils import hash_password, verify_password, create_access_token, get_curre
 
 router = APIRouter()
 
-@router.post("/register", response_model = UserOut)
+@router.post("/signup", response_model = UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     if not user.username or not user.email or not user.password:
         return JSONResponse(status_code=400, content={"message": "All feilds are required"})
@@ -86,7 +86,7 @@ def get_profile(request: Request, db: Session = Depends(get_db)):
         detail="Could not validate credentials",
     )
    
-    user = get_current_user(token, credentials_exception, db, User)
+    user = get_current_user(request, db, User)
 
     return JSONResponse(status_code=200, content={
         "user": {

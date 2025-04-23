@@ -39,7 +39,7 @@ app.add_middleware(
 #     uvicorn.run(app, host="0.0.0.0", port=8080)
 
 app.include_router(productRoutes.router, prefix="/api/v1", tags=["Inventory"])
-app.include_router(userRoutes.router, prefix="/users", tags=["Users"])
-app.include_router(adminRoutes.router, prefix="/admin", tags=["Admin"])
-app.include_router(cartRoutes.router, prefix="/cart", tags=["Cart"])
-app.include_router(orderRoutes.router, prefix="/orders", tags=["Orders"])
+app.include_router(userRoutes.router, prefix="/api/v1/users", tags=["Users"])
+app.include_router(adminRoutes.router, prefix="/api/v1/admin", tags=["Admin"])
+app.include_router(cartRoutes.router, prefix="/api/v1/cart", tags=["Cart"])
+app.include_router(orderRoutes.router, prefix="/api/v1/orders", tags=["Orders"])
