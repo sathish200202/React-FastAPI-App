@@ -1,70 +1,122 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  LogInIcon,
+  LogOutIcon,
+  User,
+  ShoppingCart,
+  LayoutDashboard,
+  Package,
+  PackageSearch,
+  Menu,
+  X,
+} from "lucide-react";
+
 import shoppyLogo from "../assets/shoppylogo.png";
 import { useUserStore } from "../stores/useUserStore";
+
 const Navbar = ({ user }) => {
   const { logout } = useUserStore();
-
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleLogout = () => {
     logout();
     navigate("/");
   };
-  const is_admin = false;
+
   return (
     <nav className="bg-white shadow-md border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
-        {/* Logo + Brand */}
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        {/* Logo and brand */}
         <Link to="/" className="flex items-center space-x-3">
           <img
             src={shoppyLogo}
             alt="Shoppy Logo"
-            className="w-14 h-14 object-cover rounded-full"
+            className="w-10 h-10 object-cover rounded-full"
           />
-          <span className="text-2xl font-bold text-blue-600 tracking-wide">
+          <span className="text-xl font-bold text-blue-600 tracking-wide">
             Shoppy
           </span>
         </Link>
 
-        {/* Nav Links */}
-        <div className="space-x-6 text-sm font-medium text-gray-700 p-2">
-          {is_admin ? (
-            <Link to="/dashboard" className="hover:text-blue-600 transition">
-              Dashboard
-            </Link>
-          ) : (
-            <Link to="/cart" className="hover:text-blue-600 transition">
-              My Cart
-            </Link>
-          )}
-          <Link to="/products" className="hover:text-blue-600 transition">
-            Products
-          </Link>
-          <Link to="/orders" className="hover:text-blue-600 transition">
-            Orders
-          </Link>
-          <Link to="/profile" className="hover:text-blue-600 transition">
-            {user?.user?.username || "Profile"}
-          </Link>
-          {user ? (
-            <Link
-              to="/"
-              className="text-red-500 hover:text-red-600 transition"
-              onClick={() => handleLogout()}
-            >
-              Logout
-            </Link>
-          ) : (
-            <Link
-              to="/login"
-              className="text-red-500 hover:text-red-600 transition"
-            >
-              Login
-            </Link>
-          )}
+        {/* Hamburger icon for mobile */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-gray-700 focus:outline-none"
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+
+        {/* Desktop Nav */}
+        <div className="hidden md:flex space-x-6 text-sm font-medium text-gray-700 items-center">
+          <NavLinks user={user} handleLogout={handleLogout} />
         </div>
       </div>
+
+      {/* Mobile Nav */}
+      {isOpen && (
+        <div className="md:hidden px-4 pb-4 space-y-4 text-sm font-medium text-gray-700">
+          <NavLinks user={user} handleLogout={handleLogout} isMobile />
+        </div>
+      )}
     </nav>
+  );
+};
+
+const NavLinks = ({ user, handleLogout, isMobile }) => {
+  const linkClass =
+    "flex items-center space-x-2 hover:text-blue-600 transition";
+
+  return (
+    <>
+      {user?.user?.role === "admin" ? (
+        <Link to="/admin/dashboard" className={linkClass}>
+          <LayoutDashboard size={18} />
+          <span>Dashboard</span>
+        </Link>
+      ) : (
+        <Link to="/cart" className={linkClass}>
+          <ShoppingCart size={18} />
+          <span>Cart</span>
+        </Link>
+      )}
+
+      <Link to="/products" className={linkClass}>
+        <PackageSearch size={18} />
+        <span>Products</span>
+      </Link>
+
+      <Link to="/orders" className={linkClass}>
+        <Package size={18} />
+        <span>Orders</span>
+      </Link>
+
+      <Link to="/profile" className={linkClass}>
+        <User size={18} />
+        <span>{user?.user?.username || "Profile"}</span>
+      </Link>
+
+      {user ? (
+        <button
+          onClick={handleLogout}
+          className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition"
+        >
+          <LogOutIcon size={18} />
+          <span>Logout</span>
+        </button>
+      ) : (
+        <Link
+          to="/login"
+          className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition"
+        >
+          <LogInIcon size={18} />
+          <span>Login</span>
+        </Link>
+      )}
+    </>
   );
 };
 

@@ -15,8 +15,9 @@ export const useUserStore = create((set) => ({
         email,
         password,
       });
-      console.log(`response: ${res.data}`);
-      set({ user: res.data, loading: false });
+      const { user, access_token } = res.data;
+      set({ user, loading: false });
+      localStorage.setItem("access_token", access_token);
       toast.success("Account created successfully!");
     } catch (err) {
       console.log(`Error in signup ${err.message}`);

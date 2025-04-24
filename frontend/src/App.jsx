@@ -6,6 +6,9 @@ import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import { useUserStore } from "./stores/useUserStore";
+import ProfilePage from "./pages/ProfilePage";
+import ProfileEditPage from "./pages/ProfileEditPage";
+import AdminPage from "./pages/AdminPage";
 
 const App = () => {
   const { user, checkAuth } = useUserStore();
@@ -18,8 +21,32 @@ const App = () => {
       <NavBar user={user} />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/signup"
+          element={!user ? <SignupPage /> : <Navigate to={"/"} />}
+        />
+        <Route
+          path="/login"
+          element={!user ? <LoginPage /> : <Navigate to={"/"} />}
+        />
+        <Route
+          path="/profile"
+          element={user ? <ProfilePage /> : <Navigate to={"/login"} />}
+        />
+        <Route
+          path="/profile/edit"
+          element={user ? <ProfileEditPage /> : <Navigate to={"/login"} />}
+        />
+        <Route
+          path="/admin/dashboard"
+          element={
+            user && user?.user?.role === "admin" ? (
+              <AdminPage />
+            ) : (
+              <Navigate to={"/login"} />
+            )
+          }
+        />
       </Routes>
 
       <Toaster />

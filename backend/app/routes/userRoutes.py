@@ -18,8 +18,9 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     
     hashed_password = hash_password(user.password)
 
-    new_user = User(username=user.username, email=user.email, hashed_password=hashed_password)
+    new_user = User(username=user.username, email=user.email, hashed_password=hashed_password, is_active=True)
 
+    access_token = create_access_token(data={"sub": user.username})
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -31,6 +32,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
             "role": new_user.role,
             "is_activate": new_user.is_active
         },
+        "access_token": access_token,
         "message": "User registered successfully"
         })
 

@@ -41,3 +41,12 @@ def get_by_name(product_category: str, db: Session = Depends(get_db)):
    else:
        return JSONResponse(status_code=404, content={"message": "Product not found"})
    
+
+@router.get("/all-category")
+def get_all_category(db:Session = Depends(get_db)):
+    all_category = db.query(Product.category).distinct().all()
+    categoies_list = [cat[0] for cat in all_category]
+    if categoies_list:
+        return categoies_list
+    else:
+        return JSONResponse(status_code=404, content={"message": "No category found"})
