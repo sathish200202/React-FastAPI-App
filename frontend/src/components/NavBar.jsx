@@ -1,8 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import shoppyLogo from "../assets/shoppylogo.png";
-
+import { useUserStore } from "../stores/useUserStore";
 const Navbar = ({ user }) => {
+  const { logout } = useUserStore();
+
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
   const is_admin = false;
   return (
     <nav className="bg-white shadow-md border-b border-gray-200">
@@ -39,12 +46,22 @@ const Navbar = ({ user }) => {
           <Link to="/profile" className="hover:text-blue-600 transition">
             {user?.user?.username || "Profile"}
           </Link>
-          <Link
-            to="/logout"
-            className="text-red-500 hover:text-red-600 transition"
-          >
-            Logout
-          </Link>
+          {user ? (
+            <Link
+              to="/"
+              className="text-red-500 hover:text-red-600 transition"
+              onClick={() => handleLogout()}
+            >
+              Logout
+            </Link>
+          ) : (
+            <Link
+              to="/login"
+              className="text-red-500 hover:text-red-600 transition"
+            >
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </nav>

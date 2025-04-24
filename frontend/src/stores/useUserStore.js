@@ -47,7 +47,6 @@ export const useUserStore = create((set) => ({
   checkAuth: async () => {
     set({ checkingAuth: true });
     const token = localStorage.getItem("access_token");
-    console.log("token: ", token);
     if (!token) {
       console.warn("No token found, skipping auth check");
       set({ checkingAuth: false });
@@ -64,6 +63,20 @@ export const useUserStore = create((set) => ({
     } catch (err) {
       console.log(`Error in checkAuth ${err.message}`);
       set({ checkingAuth: false });
+    }
+  },
+
+  logout: async () => {
+    set({ loading: true });
+
+    try {
+      const res = await axiosInstance.post("/users/logout");
+      console.log("response: ", res.data);
+      set({ user: null, loading: false });
+      localStorage.removeItem("access_token");
+    } catch (err) {
+      console.log(`Error in logout ${err.message}`);
+      set({ loading: false });
     }
   },
 }));
