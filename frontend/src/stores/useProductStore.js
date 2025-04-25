@@ -3,7 +3,7 @@ import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 
 export const useProductStore = create((set) => ({
-  prodoucts: [],
+  products: [],
   categories: [],
   loading: false,
   error: null,

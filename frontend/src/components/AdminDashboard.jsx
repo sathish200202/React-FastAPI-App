@@ -9,8 +9,9 @@ import {
   Edit,
   Trash2,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ totalUsers, totalProducts, totalOrders, users }) => {
   return (
     <div className="p-6">
       {/* Summary Cards */}
@@ -18,17 +19,17 @@ const AdminDashboard = () => {
         <Card
           icon={<Users className="w-8 h-8 text-blue-600" />}
           title="Total Users"
-          value="1,245"
+          value={totalUsers}
         />
         <Card
           icon={<PackageCheck className="w-8 h-8 text-green-600" />}
           title="Total Products"
-          value="320"
+          value={totalProducts}
         />
         <Card
           icon={<ShoppingCart className="w-8 h-8 text-yellow-500" />}
           title="Orders"
-          value="578"
+          value={totalOrders}
         />
         <Card
           icon={<BarChart2 className="w-8 h-8 text-purple-600" />}
@@ -42,9 +43,9 @@ const AdminDashboard = () => {
         <InfoBox
           title="Recent Users"
           items={[
-            "John Doe - john@example.com",
-            "Jane Smith - jane@example.com",
-            "Mark Johnson - mark@example.com",
+            ...users
+              .slice(0, 3)
+              .map((user) => `${user.username} - ${user.email}`),
           ]}
         />
         <InfoBox
@@ -59,32 +60,42 @@ const AdminDashboard = () => {
           <h2 className="text-lg font-semibold text-gray-700 mb-4">
             Admin Tools
           </h2>
-          <div className="space-y-3">
-            <ToolButton
-              color="blue"
-              icon={<Settings className="w-4 h-4 mr-2" />}
-              label="Manage Settings"
-            />
-            <ToolButton
-              color="green"
-              icon={<Users className="w-4 h-4 mr-2" />}
-              label="Manage Users"
-            />
-            <ToolButton
-              color="yellow"
-              icon={<PackageCheck className="w-4 h-4 mr-2" />}
-              label="Manage Products"
-            />
-            <ToolButton
-              color="purple"
-              icon={<ShoppingCart className="w-4 h-4 mr-2" />}
-              label="Manage Orders"
-            />
-            <ToolButton
-              color="red"
-              icon={<BarChart2 className="w-4 h-4 mr-2" />}
-              label="View Sales Details"
-            />
+          <div className="space-y-3 gap-y-2">
+            <Link to="/admin/settings" className="block">
+              <ToolButton
+                color="blue"
+                icon={<Settings className="w-4 h-4 mr-2" />}
+                label="Manage Settings"
+              />
+            </Link>
+            <Link to="/admin/users-management" className="block">
+              <ToolButton
+                color="green"
+                icon={<Users className="w-4 h-4 mr-2" />}
+                label="Manage Users"
+              />
+            </Link>
+            <Link to="/admin/product-management" className="block">
+              <ToolButton
+                color="yellow"
+                icon={<PackageCheck className="w-4 h-4 mr-2" />}
+                label="Manage Products"
+              />
+            </Link>
+            <Link to="/admin/order-management" className="block">
+              <ToolButton
+                color="purple"
+                icon={<ShoppingCart className="w-4 h-4 mr-2" />}
+                label="Manage Orders"
+              />
+            </Link>
+            <Link to="/admin/sales-details" className="block">
+              <ToolButton
+                color="red"
+                icon={<BarChart2 className="w-4 h-4 mr-2" />}
+                label="View Sales Details"
+              />
+            </Link>
           </div>
         </div>
       </div>

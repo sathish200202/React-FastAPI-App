@@ -1,6 +1,9 @@
-from fastapi import APIRouter, Depends, Path, HTTPException, Request
+from fastapi import APIRouter, Depends, UploadFile, File, Form
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+import shutil
+import uuid
+import os
 from Schemas.productsSchema import ProductCreate, ProductOut
 from models.productModel import Product
 from models.orderModel import Order
@@ -31,6 +34,8 @@ def get_admin_dashboard(db: Session = Depends(get_db), admin: User = Depends(adm
     else:
         return JSONResponse(status_code=401, content={"message": "Unauthorized access"})
 
+
+
 @router.get("/get-all-products")
 def get_all_products(db: Session = Depends(get_db), admin: User = Depends(admin_required)):
     all_products = db.query(Product).all()
@@ -40,14 +45,50 @@ def get_all_products(db: Session = Depends(get_db), admin: User = Depends(admin_
         return JSONResponse(status_code=404, content={"message": "No Products"})
     
 
-@router.post("/add-product", response_model = ProductOut)
-def add_item(item: ProductCreate, db:Session = Depends(get_db)):
-   new_item = Product(**item.dict())
-   db.add(new_item)
-   db.commit()
-   db.refresh(new_item)
+@router.post("/add-product", response_model=ProductOut)
+def add_product(
+    product_name: str = Form(...),
+    brand: str = Form(...),
+    price: float = Form(...),
+    category: str = Form(...),
+    quantity: int = Form(...),
+    description: str = Form(""),
+    image: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    admin: User = Depends(admin_required)
+):
+    try: 
+        # Save uploaded image to static/images/ with a unique name
+        image_filename = f"{uuid.uuid4().hex}_{image.filename}"
+        image_path = f"static/images/{image_filename}"
 
-   return new_item
+        os.makedirs("static/images", exist_ok=True) # Create directory if it doesn't exist
+        with open(image_path, "wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
+
+
+        # Create a new product instance
+        new_product = Product(
+            product_name=product_name,
+            brand=brand,
+            price=price,
+            category=category,
+            quantity=quantity,
+            description=description,
+            image_url=image_path,  # Save the path to the image in the database
+            is_active=True  # Set the product as active by default
+        )
+
+        # Add the product to the database
+        db.add(new_product)
+        db.commit()
+        db.refresh(new_product)
+
+        return new_product
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"message": "Error adding product", "error": str(e)})
+    
+
    
 
 @router.put("/update-product/{product_id}", response_model = ProductOut)

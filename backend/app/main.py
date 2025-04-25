@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 #import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 import os
 
@@ -19,6 +19,8 @@ load_dotenv()
 Product.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 origins = [
     "http://localhost:5173" #react app
