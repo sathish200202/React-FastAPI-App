@@ -21,7 +21,7 @@ export const useProductStore = create((set) => ({
   },
 
   get_all_products: async () => {
-    set({ loading: true });
+    set({ loading: false });
 
     try {
       const res = await axiosInstance.get("/products");

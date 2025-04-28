@@ -13,6 +13,8 @@ import {
 const Profile = () => {
   const { user } = useUserStore();
 
+  
+
   if (!user) {
     return (
       <div className="p-10 text-center text-lg text-gray-500">

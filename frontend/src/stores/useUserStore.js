@@ -62,7 +62,14 @@ export const useUserStore = create((set) => ({
       set({ user: res.data, checkingAuth: false });
       //console.log("response: ", res);
     } catch (err) {
-      console.log(`Error in checkAuth ${err.message}`);
+      if (err.response && err.response.status === 401) {
+        console.warn("Token expired or invalid, logging out");
+        localStorage.removeItem("access_token");
+        set({ user: null, checkingAuth: false });
+      } else {
+        toast.error(err.message || "Server error");
+      }
+
       set({ checkingAuth: false });
     }
   },

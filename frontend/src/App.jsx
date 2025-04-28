@@ -15,13 +15,17 @@ import AdminProductManagementPage from "./pages/AdminProductManagementPage";
 import AdminUserManagementPage from "./pages/AdminUserManagementPage";
 import AdminOrderManagement from "./components/AdminOrderManagement";
 import AdminSalesDetailsPage from "./pages/AdminSalesDetailsPage";
+import ProductsPage from "./pages/ProductsPage";
+import Footer from "./components/Footer";
+import AddToCartPage from "./pages/AddToCartPage";
+import OrdersPage from "./pages/OrdersPage";
 
 const App = () => {
   const { user, checkAuth } = useUserStore();
 
   useEffect(() => {
     checkAuth();
-  }, [checkAuth]);
+  }, [checkAuth, user]);
   return (
     <div>
       <NavBar user={user} />
@@ -38,13 +42,7 @@ const App = () => {
         <Route
           path="/profile"
           element={
-            user == null ? (
-              <Loading name={"Profile"} />
-            ) : user && user?.user?.role === "admin" ? (
-              <ProfilePage />
-            ) : (
-              <Navigate to={"/"} />
-            )
+            user == null ? <Loading name={"Profile Page"} /> : <ProfilePage />
           }
         />
         <Route
@@ -89,7 +87,7 @@ const App = () => {
             user == null ? (
               <Loading name={"Product Management Page"} />
             ) : user && user?.user?.role === "admin" ? (
-              <AdminProductManagementPage user={user}/>
+              <AdminProductManagementPage user={user} />
             ) : (
               <Navigate to={"/"} />
             )
@@ -131,9 +129,13 @@ const App = () => {
             )
           }
         />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/cart" element={<AddToCartPage />} />
+        <Route path="/orders" element={<OrdersPage />} />
       </Routes>
 
       <Toaster />
+      <Footer />
     </div>
   );
 };

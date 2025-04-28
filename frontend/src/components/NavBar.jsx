@@ -93,11 +93,12 @@ const NavLinks = ({ user, handleLogout, isMobile }) => {
         <Package size={18} />
         <span>Orders</span>
       </Link>
-
-      <Link to="/profile" className={linkClass}>
-        <User size={18} />
-        <span>{user?.user?.username || "Profile"}</span>
-      </Link>
+      {user && (
+        <Link to="/profile" className={linkClass}>
+          <User size={18} />
+          <span>{user?.user?.username || "Profile"}</span>
+        </Link>
+      )}
 
       {user ? (
         <button
