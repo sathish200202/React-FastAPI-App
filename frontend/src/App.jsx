@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import NavBar from "./components/NavBar";
 import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
@@ -19,13 +19,13 @@ import ProductsPage from "./pages/ProductsPage";
 import Footer from "./components/Footer";
 import AddToCartPage from "./pages/AddToCartPage";
 import OrdersPage from "./pages/OrdersPage";
-
+import RequiredAuth from "./components/RequiredAuth";
 const App = () => {
   const { user, checkAuth } = useUserStore();
 
   useEffect(() => {
     checkAuth();
-  }, [checkAuth, user]);
+  }, [checkAuth]);
   return (
     <div>
       <NavBar user={user} />
@@ -129,12 +129,27 @@ const App = () => {
             )
           }
         />
+        <Route path="/products/:category?" element={<ProductsPage />} />
         <Route path="/products" element={<ProductsPage />} />
-        <Route path="/cart" element={<AddToCartPage />} />
-        <Route path="/orders" element={<OrdersPage />} />
+        <Route
+          path="/cart"
+          element={
+            <RequiredAuth user={user} name="Cart">
+              <AddToCartPage />
+            </RequiredAuth>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <RequiredAuth user={user} name="Orders">
+              <OrdersPage />
+            </RequiredAuth>
+          }
+        />
       </Routes>
 
-      <Toaster />
+      <Toaster position="top-right" reverseOrder={false} />
       <Footer />
     </div>
   );

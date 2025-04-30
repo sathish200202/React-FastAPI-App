@@ -26,7 +26,7 @@ const AdminUserManagement = ({ users, loading }) => {
         <table className="w-full text-left border border-gray-200 shadow-md rounded">
           <thead className="bg-gray-100 text-gray-700">
             <tr>
-              <th className="py-3 px-4 border-b">#</th>
+              <th className="py-3 px-4 border-b">Id</th>
               <th className="py-3 px-4 border-b">Name</th>
               <th className="py-3 px-4 border-b">Email</th>
               <th className="py-3 px-4 border-b">Role</th>
@@ -47,7 +47,7 @@ const AdminUserManagement = ({ users, loading }) => {
                       user.role === "admin" ? "text-blue-500" : "text-black"
                     }`}
                   >
-                    {user.is_active ? "Admin" : "User"}
+                    {user.role}
                   </span>
                 </td>
                 <td className="py-3 px-4 border-b">

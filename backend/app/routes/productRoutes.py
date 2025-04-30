@@ -34,8 +34,8 @@ def get_product_by_id(product_id: int = Path(..., description= "The Id of the pr
     
     
 @router.get("/products/get-by-category", response_model = list[ProductOut])
-def get_by_name(product_category: str, db: Session = Depends(get_db)):
-   products = db.query(Product).filter(Product.category == product_category).all()
+def get_by_name(category: str, db: Session = Depends(get_db)):
+   products = db.query(Product).filter(Product.category == category).all()
    if products:
        return products
    else:
