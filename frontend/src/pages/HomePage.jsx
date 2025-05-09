@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useProductStore } from "../stores/useProductStore";
 import Loading from "../components/Loading";
+import { userCartStore } from "../stores/usecartStore";
 const HomePage = () => {
   // const [products, setProducts] = useState([]);
   const { products, get_all_products, loading } = useProductStore();
+  const { cart, updateCart, addToCart } = userCartStore();
+
   useEffect(() => {
     get_all_products();
     // const get_all_products = async () => {
@@ -17,6 +20,22 @@ const HomePage = () => {
 
     // get_all_products();
   }, [get_all_products]);
+
+  const handleAddToCart = (product_id, quantity) => async () => {
+    const existingProduct = cart.find((item) => item.product_id === product_id);
+    console.log("Existing product:", existingProduct);
+    try {
+      if (existingProduct) {
+        // If product exists, update the quantity
+        updateCart(existingProduct.id, existingProduct.quantity + 1);
+      } else {
+        // Otherwise, add the product to the cart
+        await addToCart(product_id, quantity);
+      }
+    } catch (error) {
+      console.error("Failed to add to cart", error);
+    }
+  };
 
   return (
     <div>
@@ -48,7 +67,10 @@ const HomePage = () => {
                     <p className="text-lg font-bold mt-2 text-blue-600">
                       ₹ {product.price}
                     </p>
-                    <button className="mt-3 bg-white text-blue-600 py-2 border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition">
+                    <button
+                      onClick={handleAddToCart(product.id, 1)}
+                      className="mt-3 bg-white text-blue-600 py-2 border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition"
+                    >
                       Add to Cart
                     </button>
                   </div>

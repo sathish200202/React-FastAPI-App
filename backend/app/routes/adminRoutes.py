@@ -123,7 +123,7 @@ def update_product(product_id: int, updateProduct: ProductCreate, db: Session = 
         return JSONResponse(status_code=404, content={"message": "Product not found"})
     
 
-@router.delete("/inventory/delete-product/{product_id}")
+@router.delete("/delete-product/{product_id}")
 def delete_product(product_id: int, db: Session = Depends(get_db),  description: str = "Delete a product by ID", admin: User = Depends(admin_required)):
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:

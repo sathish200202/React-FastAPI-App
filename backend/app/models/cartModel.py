@@ -8,12 +8,13 @@ class Cart(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id", ondelete="CASCADE"), nullable=False)
     quantity = Column(Integer, default=1)
     total_price = Column(Float, nullable=False)
 
     user = relationship("User", back_populates="carts")
-    product = relationship("Product")
+    product = relationship("Product", back_populates="carts")
+
 
 
     

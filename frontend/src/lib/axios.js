@@ -11,9 +11,18 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
+
+    // Ensure we are sending the form-data correctly for file uploads
+    if (config.headers["Content-Type"] === "multipart/form-data") {
+      // Let axios handle setting the correct boundary for the file upload
+      delete config.headers["Content-Type"];
+    }
+
     return config;
   },
   (error) => {
     return Promise.reject(error);
   }
 );
+
+export default axiosInstance;

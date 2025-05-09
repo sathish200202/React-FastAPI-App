@@ -111,7 +111,7 @@ const NavLinks = ({ user, handleLogout, isMobile }) => {
       ) : (
         <Link
           to="/login"
-          className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition"
+          className="flex items-center space-x-2 text-green-500 hover:text-green-600 transition"
         >
           <LogInIcon size={18} />
           <span>Login</span>

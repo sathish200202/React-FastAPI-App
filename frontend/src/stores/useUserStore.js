@@ -35,8 +35,10 @@ export const useUserStore = create((set) => ({
       console.log("Full response:", res); // Debug
 
       const { user, access_token } = res.data;
+      console.log("User data:", user); // Debug
       set({ user, loading: false });
       localStorage.setItem("access_token", access_token);
+      localStorage.setItem("user_id", user.user_id);
       toast.success("Login successfully!");
     } catch (err) {
       toast.error(err.message || "Server error");
@@ -82,6 +84,7 @@ export const useUserStore = create((set) => ({
       console.log("response: ", res.data);
       set({ user: null, loading: false });
       localStorage.removeItem("access_token");
+      localStorage.removeItem("user_id");
     } catch (err) {
       console.log(`Error in logout ${err.message}`);
       set({ loading: false });

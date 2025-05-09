@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 
-export const useProductStore = create((set) => ({
+export const useProductStore = create((set, get) => ({
   products: [],
   products_by_category: [],
   categories: [],
@@ -35,7 +35,7 @@ export const useProductStore = create((set) => ({
 
   get_product_by_category: async (category) => {
     set({ loading: true, error: null }); // clear previous errors
-    
+
     try {
       const res = await axiosInstance.get("/products/get-by-category", {
         params: { category },
@@ -67,6 +67,54 @@ export const useProductStore = create((set) => ({
     } catch (err) {
       set({ loading: false, error: err.message });
       toast.error("Failed to fetch product by ID");
+    }
+  },
+
+  //Admin functions
+  create_product: async (product) => {
+    set({ loading: true });
+    console.log("Product data:", product); // Log the product data
+    const formData = new FormData();
+    formData.append("product_name", product.product_name);
+    formData.append("brand", product.brand);
+    formData.append("price", product.price);
+    formData.append("category", product.category);
+    formData.append("quantity", product.quantity);
+    formData.append("description", product.description || "");
+    formData.append("image", product.image_url); // Ensure this is a File object
+    try {
+      const res = await axiosInstance.post("/admin/add-product", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      // Assume get() returns current products from Zustand
+      const { products } = get();
+      set({ loading: false, products: [...products, res.data] });
+      toast.success("Product created successfully");
+    } catch (err) {
+      console.error("Error creating product:", err); // Log the error
+      set({ loading: false, error: err.message });
+      toast.error("Failed to create product");
+    }
+  },
+
+  delete_product: async (product_id) => {
+    set({ loading: true });
+
+    try {
+      const res = await axiosInstance.delete(
+        `/admin/delete-product/${product_id}`
+      );
+      const { products } = get();
+      set({
+        loading: false,
+        products: products.filter((product) => product._id !== product_id),
+      });
+      toast.success("Product deleted successfully");
+    } catch (err) {
+      set({ loading: false, error: err.message });
+      toast.error("Failed to delete product");
     }
   },
 }));

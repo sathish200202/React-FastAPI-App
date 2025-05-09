@@ -20,6 +20,7 @@ import Footer from "./components/Footer";
 import AddToCartPage from "./pages/AddToCartPage";
 import OrdersPage from "./pages/OrdersPage";
 import RequiredAuth from "./components/RequiredAuth";
+import CheckoutPage from "./pages/CheckoutPage";
 const App = () => {
   const { user, checkAuth } = useUserStore();
 
@@ -131,14 +132,7 @@ const App = () => {
         />
         <Route path="/products/:category?" element={<ProductsPage />} />
         <Route path="/products" element={<ProductsPage />} />
-        <Route
-          path="/cart"
-          element={
-            <RequiredAuth user={user} name="Cart">
-              <AddToCartPage />
-            </RequiredAuth>
-          }
-        />
+        <Route path="/cart" element={<AddToCartPage />} />
         <Route
           path="/orders"
           element={
@@ -147,6 +141,7 @@ const App = () => {
             </RequiredAuth>
           }
         />
+        <Route path="/order/checkout" element={<CheckoutPage />} />
       </Routes>
 
       <Toaster position="top-right" reverseOrder={false} />

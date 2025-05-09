@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, Text
+from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
 
@@ -17,3 +18,6 @@ class Product(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+    carts = relationship("Cart", back_populates="product", cascade="all, delete")

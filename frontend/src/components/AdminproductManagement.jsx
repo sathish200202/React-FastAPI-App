@@ -1,8 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Loading from "./Loading";
+import { useProductStore } from "../stores/useProductStore";
 
-const AdminProductManagement = ({ products, loading }) => {
+const AdminProductManagement = ({ get_all_products, products, loading }) => {
+  const { delete_product } = useProductStore();
+  const handleDelete = async (productId) => {
+    delete_product(productId);
+    get_all_products();
+  };
   return (
     <div className="p-6 max-w-7xl mx-auto">
       {/* Header */}
@@ -60,7 +66,10 @@ const AdminProductManagement = ({ products, loading }) => {
                     <button className="text-blue-500 hover:underline">
                       Edit
                     </button>
-                    <button className="text-red-500 hover:underline">
+                    <button
+                      onClick={() => handleDelete(product.id)}
+                      className="text-red-500 hover:underline"
+                    >
                       Delete
                     </button>
                   </td>

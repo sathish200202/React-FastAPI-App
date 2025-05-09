@@ -1,8 +1,11 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useProductStore } from "../stores/useProductStore";
+import { useUserStore } from "../stores/useUserStore";
 import Loading from "../components/Loading";
 import ProductNav from "../components/ProductNav";
+import { userCartStore } from "../stores/usecartStore";
 
 const ProductsPage = () => {
   const { category } = useParams();
@@ -12,19 +15,41 @@ const ProductsPage = () => {
     get_all_products,
     get_product_by_category,
     loading,
-    error,
   } = useProductStore();
+  const { user } = useUserStore();
+  const { cart, updateCart, addToCart, getCart } = userCartStore();
 
+  const navigate = useNavigate();
   useEffect(() => {
+    // if (user) {
+    //   getCart();
+    // }
     if (!category || category === "All") {
       get_all_products();
     } else {
       get_product_by_category(category);
     }
-  }, [category]);
+  }, [category, user]);
+
+  const handleAddToCart = async (product_id, quantity) => {
+    const existingProduct = cart.find((item) => item.product_id === product_id);
+    try {
+      if (existingProduct) {
+        updateCart(existingProduct.id, existingProduct.quantity + 1);
+      } else {
+        await addToCart(product_id, quantity);
+      }
+    } catch (error) {
+      console.error("Failed to add to cart", error);
+    }
+  };
 
   const displayProducts =
     category && category !== "All" ? products_by_category : products;
+
+  const handleBuyNow = (product) => {
+    navigate("/order/checkout", { state: { product } });
+  };
 
   return (
     <div>
@@ -55,11 +80,17 @@ const ProductsPage = () => {
                     <p className="text-xl font-bold mb-4">₹{product.price}</p>
 
                     <div className="flex justify-between">
-                      <button className="bg-white text-blue-700 border border-blue-700 py-2 px-4 rounded-lg hover:text-white hover:bg-blue-700 transition w-[48%] flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => handleAddToCart(product.id, 1)}
+                        className="bg-white text-blue-700 border border-blue-700 py-2 px-4 rounded-lg hover:text-white hover:bg-blue-700 transition w-[48%] flex items-center justify-center gap-2"
+                      >
                         Add to Cart
                       </button>
 
-                      <button className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition w-[48%] flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => handleBuyNow(product)}
+                        className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition w-[48%] flex items-center justify-center gap-2"
+                      >
                         Buy Now
                       </button>
                     </div>
